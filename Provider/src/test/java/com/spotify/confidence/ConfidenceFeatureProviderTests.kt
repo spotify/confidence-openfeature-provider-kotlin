@@ -29,11 +29,15 @@ import dev.openfeature.sdk.ImmutableStructure
 import dev.openfeature.sdk.Reason
 import dev.openfeature.sdk.Value
 import dev.openfeature.sdk.events.EventHandler
+import dev.openfeature.sdk.events.OpenFeatureEvents
+import dev.openfeature.sdk.events.observe
 import dev.openfeature.sdk.exceptions.ErrorCode
 import dev.openfeature.sdk.exceptions.OpenFeatureError.FlagNotFoundError
 import dev.openfeature.sdk.exceptions.OpenFeatureError.ParseError
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -1116,5 +1120,51 @@ internal class ConfidenceFeatureProviderTests {
             )
         }
         assertEquals("Unable to parse flag value: mystring/extrapath", ex.message)
+    }
+
+    @Test
+    fun testResolveFails() = runTest {
+        val mockError = Error("Fetching evaluations failed: Unauthorized")
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+        val eventHandler = EventHandler(testDispatcher)
+        val confidenceFeatureProvider = ConfidenceFeatureProvider.create(
+            context = mockContext,
+            clientSecret = "",
+            cache = InMemoryCache(),
+            eventHandler = eventHandler,
+            dispatcher = testDispatcher,
+            client = mockClient
+        )
+        whenever(mockClient.apply(any(), any())).thenReturn(Result.Success)
+        whenever(mockClient.resolve(eq(listOf()), any())).thenThrow(mockError)
+
+        var readySignals = 0
+        val collectedErrors = mutableListOf<OpenFeatureEvents.ProviderError>()
+        CoroutineScope(testDispatcher).launch {
+            eventHandler.observe<OpenFeatureEvents.ProviderError>().collect {
+                collectedErrors.add(it)
+            }
+        }
+        CoroutineScope(testDispatcher).launch {
+            eventHandler.observe<OpenFeatureEvents.ProviderReady>().collect {
+                readySignals += 1
+            }
+        }
+        confidenceFeatureProvider.initialize(ImmutableContext("user2"))
+        advanceUntilIdle()
+        val ex = assertThrows(FlagNotFoundError::class.java) {
+            confidenceFeatureProvider.getStringEvaluation(
+                "test-kotlin-flag-1.mystring.extrapath",
+                "default",
+                ImmutableContext("user2")
+            )
+        }
+
+        // Observable error event
+        assertEquals(OpenFeatureEvents.ProviderError(mockError), collectedErrors.first())
+        // We still signal ready, since the network error is not fatal
+        assertEquals(1, readySignals)
+        // At evaluation time, we simply report that the is not found in the cached evaluations
+        assertEquals("Could not find flag named: test-kotlin-flag-1", ex.message)
     }
 }
