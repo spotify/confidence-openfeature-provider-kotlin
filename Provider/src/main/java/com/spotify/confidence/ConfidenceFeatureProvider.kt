@@ -55,8 +55,9 @@ class ConfidenceFeatureProvider private constructor(
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(job + dispatcher)
     private val networkExceptionHandler by lazy {
-        CoroutineExceptionHandler { _, _ ->
+        CoroutineExceptionHandler { _, t ->
             // network failed, provider is ready but with default/cache values
+            eventHandler.publish(OpenFeatureEvents.ProviderError(t))
             eventHandler.publish(OpenFeatureEvents.ProviderReady)
         }
     }
