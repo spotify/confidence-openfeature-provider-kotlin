@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.8](https://github.com/spotify/confidence-openfeature-provider-kotlin/compare/0.1.7...0.1.8) (2024-03-14)
+
+
+### 🐛 Bug Fixes
+
+* change STALE reason in case of context change ([#123](https://github.com/spotify/confidence-openfeature-provider-kotlin/issues/123)) ([fae882f](https://github.com/spotify/confidence-openfeature-provider-kotlin/commit/fae882f433fd451ba889ea0e570c449d7c60fb67))
+* Remove STALE event ([#122](https://github.com/spotify/confidence-openfeature-provider-kotlin/issues/122)) ([019dbfc](https://github.com/spotify/confidence-openfeature-provider-kotlin/commit/019dbfc57a09dcd98134ce54247409a3e7b8127d))
+
+
+### 📚 Documentation
+
+* Add apply note to readme ([#125](https://github.com/spotify/confidence-openfeature-provider-kotlin/issues/125)) ([2bc0bae](https://github.com/spotify/confidence-openfeature-provider-kotlin/commit/2bc0bae4c2b6b1919a8029e9f60235a3dd382461))
+* Add documentation about `apply` ([#119](https://github.com/spotify/confidence-openfeature-provider-kotlin/issues/119)) ([5973467](https://github.com/spotify/confidence-openfeature-provider-kotlin/commit/597346777b7534986c7c99ccb669d08688117397))
+* Add documentation about apply ([5973467](https://github.com/spotify/confidence-openfeature-provider-kotlin/commit/597346777b7534986c7c99ccb669d08688117397))
+
 ## [0.1.7](https://github.com/spotify/confidence-openfeature-provider-kotlin/compare/0.1.6...0.1.7) (2024-01-16)
 
 
