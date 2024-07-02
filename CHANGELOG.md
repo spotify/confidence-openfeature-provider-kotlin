@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.6](https://github.com/spotify/confidence-sdk-android/compare/0.3.5...0.3.6) (2024-07-02)
+
+
+### 🐛 Bug Fixes
+
+* Fix the bug regarding accessing flags using with context ([#172](https://github.com/spotify/confidence-sdk-android/issues/172)) ([39625e6](https://github.com/spotify/confidence-sdk-android/commit/39625e6de9f7f2e878b4397616b0954adb0ee92b))
+* update how debug logging works ([#174](https://github.com/spotify/confidence-sdk-android/issues/174)) ([bd79fad](https://github.com/spotify/confidence-sdk-android/commit/bd79fad16079345ed9046c115cfbe09d13b791fe))
+
+
+### ✨ New Features
+
+* add binary-compatibility-validator plugin ([111e8bd](https://github.com/spotify/confidence-sdk-android/commit/111e8bd1c86cfc397845af97f63c8b63a8b4f295))
+
 ## [0.3.5](https://github.com/spotify/confidence-sdk-android/compare/0.3.4...0.3.5) (2024-06-25)
 
 
